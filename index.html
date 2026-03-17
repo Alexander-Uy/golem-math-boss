@@ -14,75 +14,55 @@
     button { background-color: #557a55; color: white; border: none; padding: 12px 24px; font-size: 16px; border-radius: 5px; cursor: pointer; transition: 0.3s; }
     button:hover { background-color: #6a966a; }
     
-    /* --- SECCIÓN DE VIDEO A PANTALLA COMPLETA --- */
-    #video-section {
-      display: none; 
+    /* --- !!! NUEVA SECCIÓN DE INTRO CINEMÁTICA RPG !!! --- */
+    #intro-section {
+      display: none; /* Hidden by default */
       position: fixed; 
-      top: 0; 
-      left: 0; 
-      width: 100vw; 
-      height: 100vh; 
-      background-color: black; 
+      top: 0; left: 0; 
+      width: 100vw; height: 100vh; 
+      background-color: #1a1e24; /* Seamless with body */
       z-index: 9999; 
       flex-direction: column; 
       justify-content: center; 
       align-items: center;
+      opacity: 1;
+      transition: opacity 1s ease-out; /* For final fade out */
     }
     
-    video { width: 100%; height: 100%; object-fit: contain; }
+    /* Retrato Central Grande del Gólem */
+    #central-golem-portrait {
+      max-width: 300px;
+      border-radius: 50%;
+      border: 4px solid #8ba989;
+      box-shadow: 0 0 20px rgba(139, 169, 137, 0.5);
+      animation: pulseIntro 3s infinite ease-in-out; /* Large pulse for intro */
+      margin-bottom: 30px;
+    }
+    
+    #central-golem-portrait img { width: 100%; height: auto; border-radius: 50%; }
 
-    #btnDesafio {
-      display: none; 
-      position: absolute; 
-      bottom: 10%; 
-      font-size: 20px; 
-      padding: 15px 30px; 
-      box-shadow: 0 0 20px #8ba989; 
-      z-index: 10000;
+    /* Contenedor del texto de máquina de escribir */
+    #typing-text-container {
+      font-size: 1.2em;
+      color: #e0e0e0;
+      max-width: 70%;
+      text-align: center;
+      line-height: 1.5;
+      animation: fadeIn 0.5s ease-out; /* Subtle fade in for text box */
     }
 
-    /* --- !!! NUEVO DISEÑO DEL CHAT MEJORADO !!! --- */
-    #chat-container { display: none; }
+    /* --- ESTILOS DEL CHAT (Mantenidos y mejorados) --- */
+    #chat-container { display: none; opacity: 0; transition: opacity 1s ease-in; } /* Start invisible for fade-in */
     
     /* Diseño de dos columnas (Flexbox) */
-    #chat-layout {
-      display: flex;
-      max-width: 1000px;
-      margin: 20px auto;
-      gap: 30px;
-      align-items: flex-start;
-      justify-content: center;
-    }
+    #chat-layout { display: flex; max-width: 1000px; margin: 20px auto; gap: 30px; align-items: flex-start; justify-content: center; }
 
     /* Columna IZQUIERDA: Retrato del Gólem */
-    #golem-portrait {
-      flex: 1;
-      max-width: 250px;
-      background: #2a2f35;
-      padding: 15px;
-      border-radius: 50%; /* Forma circular para el ícono */
-      border: 3px solid #8ba989;
-      box-shadow: 0 0 15px rgba(139, 169, 137, 0.4);
-      animation: pulse 4s infinite ease-in-out; /* Animación de "respiración" */
-    }
+    #golem-portrait { flex: 1; max-width: 250px; background: #2a2f35; padding: 15px; border-radius: 50%; border: 3px solid #8ba989; box-shadow: 0 0 15px rgba(139, 169, 137, 0.4); animation: pulseSmall 4s infinite ease-in-out; }
+    #golem-portrait img { width: 100%; height: auto; border-radius: 50%; }
 
-    #golem-portrait img {
-      width: 100%;
-      height: auto;
-      border-radius: 50%;
-    }
-
-    /* Columna DERECHA: Ventana del Chat */
-    #chat-window {
-      flex: 2;
-      background: #2a2f35;
-      padding: 20px;
-      border-radius: 10px;
-      border: 2px solid #4a554e;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
+    /* Columna DERECHA: Ventana de Chat */
+    #chat-window { flex: 2; background: #2a2f35; padding: 20px; border-radius: 10px; border: 2px solid #4a554e; display: flex; flex-direction: column; gap: 15px; }
     
     #messages { height: 500px; overflow-y: auto; background: #1f2328; padding: 20px; border-radius: 5px; border: 1px inset #000; display: flex; flex-direction: column; gap: 15px; }
     
@@ -91,13 +71,7 @@
     .golem { background: #3d453f; align-self: flex-start; border-left: 4px solid #8ba989; color: #e0e0e0; border-bottom-left-radius: 2px; }
 
     /* Indicador de "escribiendo" del Gólem */
-    .typing-indicator {
-      font-style: italic;
-      color: #aaa;
-      margin-left: 10px;
-      display: flex;
-      gap: 5px;
-    }
+    .typing-indicator { font-style: italic; color: #aaa; margin-left: 10px; display: flex; gap: 5px; }
     .dot { width: 6px; height: 6px; background-color: #aaa; border-radius: 50%; animation: blink 1.4s infinite; }
     .dot:nth-child(2) { animation-delay: 0.2s; }
     .dot:nth-child(3) { animation-delay: 0.4s; }
@@ -105,7 +79,10 @@
     /* --- ANIMACIONES CSS --- */
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes blink { 0% { opacity: 0.2; } 20% { opacity: 1; } 100% { opacity: 0.2; } }
-    @keyframes pulse { 
+    
+    /* Pulse anims with different scales */
+    @keyframes pulseIntro { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+    @keyframes pulseSmall { 
       0% { transform: scale(1); box-shadow: 0 0 15px rgba(139, 169, 137, 0.4); } 
       50% { transform: scale(1.03); box-shadow: 0 0 25px rgba(139, 169, 137, 0.6); } 
       100% { transform: scale(1); box-shadow: 0 0 15px rgba(139, 169, 137, 0.4); } 
@@ -123,12 +100,12 @@
     <button onclick="checkPass()">Invocar</button>
   </div>
 
-  <div id="video-section">
-    <video id="golemVideo" playsinline onended="mostrarBoton()">
-      <source src="golem.mp4" type="video/mp4">
-      Tu navegador no soporta el formato de video.
-    </video>
-    <button id="btnDesafio" onclick="startChat()">¡Aceptar el desafío!</button>
+  <div id="intro-section">
+    <div id="central-golem-portrait">
+      <img src="golem-icon.png" alt="Retrato Central del Gólem">
+    </div>
+    <div id="typing-text-container">
+      </div>
   </div>
 
   <div id="chat-container">
@@ -150,27 +127,64 @@
 
   <script>
     let chatHistory = [];
+    let firstMessageTyped = false; // Prevents reloading first message on redeploys
+    const firstMessageText = 'Soy el Gólem de los Ecos. Para cruzar mis dominios, debes probar tu dominio sobre los números. Dime, joven errante: ¿Cómo se lee el número grabado en mi pecho? Escríbelo con palabras: 4.072.508';
 
     function checkPass() {
       if(document.getElementById('pass').value.toUpperCase() === 'MATEMATICA2026') {
         document.getElementById('login-section').style.display = 'none';
-        document.getElementById('video-section').style.display = 'flex'; 
-        document.getElementById('golemVideo').play(); 
+        
+        // --- !!! START RPG INTRO CINEMATIC !!! ---
+        const introSection = document.getElementById('intro-section');
+        introSection.style.display = 'flex';
+
+        // Start typewriter animation for the first message in the Intro
+        typeWriter('typing-text-container', firstMessageText, 50, () => {
+          // Callback after typing finishes: seamless transition to chat
+          setTimeout(() => {
+            // Smoothly fade out the intro section
+            introSection.style.opacity = '0';
+            setTimeout(() => {
+              introSection.style.display = 'none';
+            }, 1000); // Wait for fade transition duration
+
+            // Load the first Golem message *only once* into the real chat
+            if (!firstMessageTyped) {
+              addMsg('Gólem', firstMessageText);
+              firstMessageTyped = true;
+            }
+
+            // Simultaneously smoothly fade in the full chat interface
+            const chatContainer = document.getElementById('chat-container');
+            chatContainer.style.display = 'flex';
+            // Trigger reflow to apply opacity change after display is set
+            chatContainer.offsetHeight; 
+            chatContainer.style.opacity = '1';
+            
+          }, 1000); // Short delay after typing finishes
+        });
+
       } else {
         alert('Las runas no brillan. Contraseña incorrecta.');
       }
     }
 
-    function mostrarBoton() {
-      document.getElementById('btnDesafio').style.display = 'block';
-    }
+    // JS Typewriter Function: types text letter by letter, with a callback
+    function typeWriter(elementId, text, speed, callback) {
+      let i = 0;
+      let targetElement = document.getElementById(elementId);
+      targetElement.innerHTML = ''; // clear initial content
 
-    function startChat() {
-      document.getElementById('video-section').style.display = 'none';
-      document.getElementById('chat-container').style.display = 'block';
-      // Cambiamos a 'flex' para que funcione el diseño de columnas
-      document.getElementById('chat-container').style.display = 'flex'; 
-      addMsg('Gólem', 'Soy el Gólem de los Ecos. Para cruzar mis dominios, debes probar tu dominio sobre los números. Dime, joven errante: ¿Cómo se lee el número grabado en mi pecho? Escríbelo con palabras: 4.072.508');
+      function type() {
+        if (i < text.length) {
+          targetElement.innerHTML += text.charAt(i);
+          i++;
+          setTimeout(type, speed);
+        } else if (callback) {
+          callback(); // execute callback when typing is complete
+        }
+      }
+      type(); // start the first call
     }
 
     function addMsg(sender, text) {
