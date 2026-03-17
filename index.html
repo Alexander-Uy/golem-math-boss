@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Desafío: El Gólem de los Ecos</title>
+  <style>
+    body { background-color: #1a1e24; color: #e0e0e0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; margin: 0; padding: 20px; }
+    h1 { color: #8ba989; }
+    .container { max-width: 600px; margin: 0 auto; background: #2a2f35; padding: 20px; border-radius: 10px; border: 2px solid #4a554e; box-shadow: 0 4px 8px rgba(0,0,0,0.5); }
+    input[type="text"] { width: 80%; padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #555; background: #1a1e24; color: white; }
+    button { background-color: #557a55; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; transition: 0.3s; }
+    button:hover { background-color: #6a966a; }
+    #chat-container { display: none; }
+    #messages { height: 350px; overflow-y: auto; background: #1f2328; padding: 15px; margin-bottom: 15px; border-radius: 5px; border: 1px inset #000; display: flex; flex-direction: column; gap: 10px; }
+    .msg { padding: 10px 15px; border-radius: 8px; max-width: 80%; text-align: left; }
+    .user { background: #2b5b84; align-self: flex-end; color: white; }
+    .golem { background: #3d453f; align-self: flex-start; border-left: 4px solid #8ba989; color: #e0e0e0; }
+  </style>
+</head>
+<body>
+
+  <div class="container" id="login-section">
+    <h1>Portal del Valle de los Naturales</h1>
+    <p>Ingresa la palabra mágica para revelar al Guardián:</p>
+    <input type="text" id="pass" placeholder="Contraseña de la clase">
+    <br>
+    <button onclick="checkPass()">Invocar</button>
+  </div>
+
+  <div class="container" id="video-section" style="display:none;">
+    <h1>El Gólem de los Ecos</h1>
+    <p><i>(Imagina al inmenso gólem de piedra despertando frente a ti...)</i></p>
+    <button onclick="startChat()">Aceptar el desafío</button>
+  </div>
+
+  <div class="container" id="chat-container">
+    <div id="messages"></div>
+    <div style="display: flex; gap: 10px;">
+      <input type="text" id="userInput" placeholder="Escribe tu respuesta al Gólem...">
+      <button onclick="sendMessage()">Enviar</button>
+    </div>
+  </div>
+
+  <script>
+    let chatHistory = [];
+
+    function checkPass() {
+      if(document.getElementById('pass').value.toUpperCase() === 'MATEMATICA2026') {
+        document.getElementById('login-section').style.display = 'none';
+        document.getElementById('video-section').style.display = 'block';
+      } else {
+        alert('Las runas no brillan. Contraseña incorrecta.');
+      }
+    }
+
+    function startChat() {
+      document.getElementById('video-section').style.display = 'none';
+      document.getElementById('chat-container').style.display = 'block';
+      addMsg('Gólem', 'Soy el Gólem de los Ecos. Para cruzar mis dominios, debes probar tu dominio sobre los números. Dime, joven errante: ¿Cómo se lee el número grabado en mi pecho? Escríbelo con palabras: 4.072.508');
+    }
+
+    function addMsg(sender, text) {
+      const div = document.createElement('div');
+      div.className = 'msg ' + (sender === 'Tú' ? 'user' : 'golem');
+      div.innerText = text;
+      document.getElementById('messages').appendChild(div);
+      document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById('userInput');
+      const text = input.value.trim();
+      if(!text) return;
+      
+      addMsg('Tú', text);
+      input.value = '';
+      chatHistory.push({ role: "user", parts: [{ text: text }] });
+
+      // Llamada a nuestro servidor oculto en Vercel
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ history: chatHistory })
+      });
+      
+      const data = await response.json();
+      addMsg('Gólem', data.reply);
+      chatHistory.push({ role: "model", parts: [{ text: data.reply }] });
+    }
+  </script>
+</body>
+</html>
