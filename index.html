@@ -6,10 +6,47 @@
   <style>
     body { background-color: #1a1e24; color: #e0e0e0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; margin: 0; padding: 20px; }
     h1 { color: #8ba989; }
+    
+    /* Contenedores estándar para el login y el chat */
     .container { max-width: 600px; margin: 0 auto; background: #2a2f35; padding: 20px; border-radius: 10px; border: 2px solid #4a554e; box-shadow: 0 4px 8px rgba(0,0,0,0.5); }
+    
     input[type="text"] { width: 80%; padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #555; background: #1a1e24; color: white; }
     button { background-color: #557a55; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; transition: 0.3s; }
     button:hover { background-color: #6a966a; }
+    
+    /* --- NUEVA SECCIÓN DE VIDEO A PANTALLA COMPLETA --- */
+    #video-section {
+      display: none; 
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      width: 100vw; 
+      height: 100vh; 
+      background-color: black; 
+      z-index: 9999; 
+      flex-direction: column; 
+      justify-content: center; 
+      align-items: center;
+    }
+    
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* Hace que el video llene toda la pantalla sin deformarse */
+    }
+
+    /* Botón flotante épico que aparece al final del video */
+    #btnDesafio {
+      display: none; 
+      position: absolute; 
+      bottom: 10%; 
+      font-size: 20px; 
+      padding: 15px 30px; 
+      box-shadow: 0 0 20px #8ba989; 
+      z-index: 10000;
+    }
+
+    /* --- ESTILOS DEL CHAT --- */
     #chat-container { display: none; }
     #messages { height: 350px; overflow-y: auto; background: #1f2328; padding: 15px; margin-bottom: 15px; border-radius: 5px; border: 1px inset #000; display: flex; flex-direction: column; gap: 10px; }
     .msg { padding: 10px 15px; border-radius: 8px; max-width: 80%; text-align: left; }
@@ -27,16 +64,12 @@
     <button onclick="checkPass()">Invocar</button>
   </div>
 
-  <div class="container" id="video-section" style="display:none;">
-    <h1>El Gólem de los Ecos</h1>
-    
-    <video width="100%" style="max-width: 500px; border-radius: 10px; border: 2px solid #8ba989; margin-bottom: 15px;" autoplay playsinline>
+  <div id="video-section">
+    <video id="golemVideo" playsinline onended="mostrarBoton()">
       <source src="golem.mp4" type="video/mp4">
       Tu navegador no soporta el formato de video.
     </video>
-
-    <br>
-    <button onclick="startChat()">Aceptar el desafío</button>
+    <button id="btnDesafio" onclick="startChat()">¡Aceptar el desafío!</button>
   </div>
 
   <div class="container" id="chat-container">
@@ -53,10 +86,19 @@
     function checkPass() {
       if(document.getElementById('pass').value.toUpperCase() === 'MATEMATICA2026') {
         document.getElementById('login-section').style.display = 'none';
-        document.getElementById('video-section').style.display = 'block';
+        
+        // Cambiamos a 'flex' para que funcione el centrado a pantalla completa
+        document.getElementById('video-section').style.display = 'flex'; 
+        
+        // El video se reproduce aquí, con sonido, gracias a que el alumno hizo clic en el botón
+        document.getElementById('golemVideo').play(); 
       } else {
         alert('Las runas no brillan. Contraseña incorrecta.');
       }
+    }
+
+    function mostrarBoton() {
+      document.getElementById('btnDesafio').style.display = 'block';
     }
 
     function startChat() {
@@ -79,10 +121,9 @@
       if(!text) return;
       
       addMsg('Tú', text);
-      input.value = ''; // Aquí restauramos la limpieza de la caja de texto
+      input.value = '';
       chatHistory.push({ role: "user", parts: [{ text: text }] });
 
-      // Llamada a nuestro servidor oculto en Vercel
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
