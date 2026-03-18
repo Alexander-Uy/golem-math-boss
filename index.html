@@ -7,61 +7,53 @@
     body { background-color: #1a1e24; color: #e0e0e0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; margin: 0; padding: 20px; overflow-x: hidden; }
     h1 { color: #8ba989; }
     
-    /* Contenedores estándar para el login */
     .container { max-width: 800px; margin: 0 auto; background: #2a2f35; padding: 20px; border-radius: 10px; border: 2px solid #4a554e; box-shadow: 0 4px 8px rgba(0,0,0,0.5); }
     
     input[type="text"] { width: 80%; padding: 12px; margin: 10px 0; border-radius: 5px; border: 1px solid #555; background: #1a1e24; color: white; font-size: 16px; }
     button { background-color: #557a55; color: white; border: none; padding: 12px 24px; font-size: 16px; border-radius: 5px; cursor: pointer; transition: 0.3s; }
     button:hover { background-color: #6a966a; }
     
-    /* --- !!! NUEVA SECCIÓN DE INTRO CINEMÁTICA RPG !!! --- */
     #intro-section {
-      display: none; /* Hidden by default */
+      display: none; 
       position: fixed; 
       top: 0; left: 0; 
       width: 100vw; height: 100vh; 
-      background-color: #1a1e24; /* Seamless with body */
+      background-color: #1a1e24; 
       z-index: 9999; 
       flex-direction: column; 
       justify-content: center; 
       align-items: center;
       opacity: 1;
-      transition: opacity 1s ease-out; /* For final fade out */
+      transition: opacity 1s ease-out; 
     }
     
-    /* Retrato Central Grande del Gólem */
     #central-golem-portrait {
       max-width: 300px;
       border-radius: 50%;
       border: 4px solid #8ba989;
       box-shadow: 0 0 20px rgba(139, 169, 137, 0.5);
-      animation: pulseIntro 3s infinite ease-in-out; /* Large pulse for intro */
+      animation: pulseIntro 3s infinite ease-in-out; 
       margin-bottom: 30px;
     }
     
     #central-golem-portrait img { width: 100%; height: auto; border-radius: 50%; }
 
-    /* Contenedor del texto de máquina de escribir */
     #typing-text-container {
       font-size: 1.2em;
       color: #e0e0e0;
       max-width: 70%;
       text-align: center;
       line-height: 1.5;
-      animation: fadeIn 0.5s ease-out; /* Subtle fade in for text box */
+      animation: fadeIn 0.5s ease-out; 
     }
 
-    /* --- ESTILOS DEL CHAT (Mantenidos y mejorados) --- */
-    #chat-container { display: none; opacity: 0; transition: opacity 1s ease-in; } /* Start invisible for fade-in */
+    #chat-container { display: none; opacity: 0; transition: opacity 1s ease-in; } 
     
-    /* Diseño de dos columnas (Flexbox) */
     #chat-layout { display: flex; max-width: 1000px; margin: 20px auto; gap: 30px; align-items: flex-start; justify-content: center; }
 
-    /* Columna IZQUIERDA: Retrato del Gólem */
     #golem-portrait { flex: 1; max-width: 250px; background: #2a2f35; padding: 15px; border-radius: 50%; border: 3px solid #8ba989; box-shadow: 0 0 15px rgba(139, 169, 137, 0.4); animation: pulseSmall 4s infinite ease-in-out; }
     #golem-portrait img { width: 100%; height: auto; border-radius: 50%; }
 
-    /* Columna DERECHA: Ventana de Chat */
     #chat-window { flex: 2; background: #2a2f35; padding: 20px; border-radius: 10px; border: 2px solid #4a554e; display: flex; flex-direction: column; gap: 15px; }
     
     #messages { height: 500px; overflow-y: auto; background: #1f2328; padding: 20px; border-radius: 5px; border: 1px inset #000; display: flex; flex-direction: column; gap: 15px; }
@@ -70,24 +62,20 @@
     .user { background: #2b5b84; align-self: flex-end; color: white; border-bottom-right-radius: 2px; }
     .golem { background: #3d453f; align-self: flex-start; border-left: 4px solid #8ba989; color: #e0e0e0; border-bottom-left-radius: 2px; }
 
-    /* Indicador de "escribiendo" del Gólem */
     .typing-indicator { font-style: italic; color: #aaa; margin-left: 10px; display: flex; gap: 5px; }
     .dot { width: 6px; height: 6px; background-color: #aaa; border-radius: 50%; animation: blink 1.4s infinite; }
     .dot:nth-child(2) { animation-delay: 0.2s; }
     .dot:nth-child(3) { animation-delay: 0.4s; }
 
-    /* --- ANIMACIONES CSS --- */
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes blink { 0% { opacity: 0.2; } 20% { opacity: 1; } 100% { opacity: 0.2; } }
     
-    /* Pulse anims with different scales */
     @keyframes pulseIntro { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
     @keyframes pulseSmall { 
       0% { transform: scale(1); box-shadow: 0 0 15px rgba(139, 169, 137, 0.4); } 
       50% { transform: scale(1.03); box-shadow: 0 0 25px rgba(139, 169, 137, 0.6); } 
       100% { transform: scale(1); box-shadow: 0 0 15px rgba(139, 169, 137, 0.4); } 
     }
-
   </style>
 </head>
 <body>
@@ -101,3 +89,142 @@
   </div>
 
   <div id="intro-section">
+    <div id="central-golem-portrait">
+      <img src="golem-icon.png" alt="Retrato Central del Gólem">
+    </div>
+    <div id="typing-text-container"></div>
+  </div>
+
+  <div id="chat-container">
+    <div id="chat-layout">
+      <div id="golem-portrait">
+        <img src="golem-icon.png" alt="Retrato del Gólem">
+      </div>
+      
+      <div id="chat-window">
+        <div id="messages"></div>
+        <div style="display: flex; gap: 10px;">
+          <input type="text" id="userInput" placeholder="Escribe tu respuesta al Gólem...">
+          <button onclick="sendMessage()">Enviar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let chatHistory = [];
+    let firstMessageTyped = false; 
+    
+    const introText = 'Soy el Gólem de los Ecos... Has despertado a la piedra antigua de su letargo.';
+    const challengeText = 'Para cruzar mis dominios, debes probar tu dominio sobre los números. Dime, joven errante: ¿Cómo se lee el número grabado en mi pecho? Escríbelo con palabras: 4.072.508';
+
+    function checkPass() {
+      if(document.getElementById('pass').value.toUpperCase() === 'MATEMATICA2026') {
+        document.getElementById('login-section').style.display = 'none';
+        
+        const introSection = document.getElementById('intro-section');
+        introSection.style.display = 'flex';
+
+        typeWriter('typing-text-container', introText, 50, () => {
+          setTimeout(() => {
+            introSection.style.opacity = '0';
+            setTimeout(() => {
+              introSection.style.display = 'none';
+            }, 1000); 
+
+            if (!firstMessageTyped) {
+              addMsg('Gólem', introText);
+              firstMessageTyped = true;
+
+              setTimeout(() => {
+                showTyping(); 
+                
+                setTimeout(() => {
+                  hideTyping(); 
+                  addMsg('Gólem', challengeText); 
+                }, 2000); 
+
+              }, 800); 
+            }
+
+            const chatContainer = document.getElementById('chat-container');
+            chatContainer.style.display = 'flex';
+            chatContainer.offsetHeight; 
+            chatContainer.style.opacity = '1';
+            
+          }, 1500); 
+        });
+
+      } else {
+        alert('Las runas no brillan. Contraseña incorrecta.');
+      }
+    }
+
+    function typeWriter(elementId, text, speed, callback) {
+      let i = 0;
+      let targetElement = document.getElementById(elementId);
+      targetElement.innerHTML = ''; 
+
+      function type() {
+        if (i < text.length) {
+          targetElement.innerHTML += text.charAt(i);
+          i++;
+          setTimeout(type, speed);
+        } else if (callback) {
+          callback(); 
+        }
+      }
+      type(); 
+    }
+
+    function addMsg(sender, text) {
+      const div = document.createElement('div');
+      div.className = 'msg ' + (sender === 'Tú' ? 'user' : 'golem');
+      div.innerText = text;
+      document.getElementById('messages').appendChild(div);
+      document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+    }
+
+    function showTyping() {
+      const div = document.createElement('div');
+      div.id = 'typing-bubbling';
+      div.className = 'msg golem typing-indicator';
+      div.innerHTML = '<span class="dot"></span><span class="dot"></span><span class="dot"></span>';
+      document.getElementById('messages').appendChild(div);
+      document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+    }
+
+    function hideTyping() {
+      const typingIndicator = document.getElementById('typing-bubbling');
+      if (typingIndicator) {
+        typingIndicator.remove();
+      }
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById('userInput');
+      const text = input.value.trim();
+      if(!text) return;
+      
+      addMsg('Tú', text);
+      input.value = '';
+      chatHistory.push({ role: "user", parts: [{ text: text }] });
+
+      showTyping();
+
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ history: chatHistory })
+      });
+      
+      const data = await response.json();
+      
+      hideTyping();
+
+      addMsg('Gólem', data.reply);
+      chatHistory.push({ role: "model", parts: [{ text: data.reply }] });
+    }
+  </script>
+</body>
+</html>
