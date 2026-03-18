@@ -5,7 +5,7 @@
   <title>Desafío: El Gólem de los Ecos</title>
   <style>
     body { 
-      background-image: url('landscape-bridge.png'); 
+      background-image: url('landscape-bridge.gif'); /* Tu fondo animado */
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -31,20 +31,18 @@
       backdrop-filter: blur(5px); 
     }
 
-    /* !!! NUEVO: Centrado perfecto para la caja de inicio !!! */
     #login-section {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 90%; /* Para que respire un poco a los lados en móviles */
+      width: 90%; 
     }
     
     input[type="text"] { width: 80%; padding: 12px; margin: 10px 0; border-radius: 5px; border: 1px solid #555; background: #1a1e24; color: white; font-size: 16px; }
     button { background-color: #557a55; color: white; border: none; padding: 12px 24px; font-size: 16px; border-radius: 5px; cursor: pointer; transition: 0.3s; }
     button:hover { background-color: #6a966a; }
     
-    /* --- VENTANA EMERGENTE PERSONALIZADA (MODAL) --- */
     #custom-alert {
       display: none; 
       position: fixed; 
@@ -163,6 +161,10 @@
 </head>
 <body>
 
+  <audio id="bg-music" loop>
+    <source src="aventura.mp3" type="audio/mpeg">
+  </audio>
+
   <div id="custom-alert">
     <div class="modal-content">
       <h3>El Gólem advierte...</h3>
@@ -206,8 +208,8 @@
     let chatHistory = [];
     let firstMessageTyped = false; 
     
-    const introText = 'Soy el Gólem de los Ecos... Has despertado a la piedra antigua de su letargo...';
-    const challengeText = 'Para cruzar mis dominios, debes probar tu dominio sobre los números. Dime, joven errante, ¿estás listo para enfrentarte a los desafíos?';
+    const introText = 'Soy el Gólem de los Ecos... Has despertado a la piedra antigua de su letargo.';
+    const challengeText = 'Para cruzar mis dominios, debes probar tu dominio sobre los números. Dime, joven errante: ¿Cómo se lee el número grabado en mi pecho? Escríbelo con palabras: 4.072.508';
 
     function showAlert() {
       const modal = document.getElementById('custom-alert');
@@ -223,6 +225,13 @@
 
     function checkPass() {
       if(document.getElementById('pass').value.toUpperCase() === 'MATEMATICA2026') {
+        
+        // --- ¡MAGIA DE AUDIO AQUÍ! ---
+        const backgroundMusic = document.getElementById('bg-music');
+        backgroundMusic.volume = 0.3; // Volumen al 30% para que no tape los pensamientos matemáticos
+        backgroundMusic.play().catch(error => console.log("El navegador bloqueó el audio", error));
+        // ------------------------------
+
         document.getElementById('login-section').style.display = 'none';
         
         const introSection = document.getElementById('intro-section');
