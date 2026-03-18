@@ -14,45 +14,41 @@
     button { background-color: #557a55; color: white; border: none; padding: 12px 24px; font-size: 16px; border-radius: 5px; cursor: pointer; transition: 0.3s; }
     button:hover { background-color: #6a966a; }
     
-    /* --- !!! NUEVA SECCIÓN DE INTRO CINEMÁTICA RPG !!! --- */
+    /* --- !!! NUEVA SECCIÓN DE INTRO: TERMINAL MÁGICA !!! --- */
     #intro-section {
-      display: none; /* Hidden by default */
+      display: none; /* Oculto por defecto */
       position: fixed; 
       top: 0; left: 0; 
       width: 100vw; height: 100vh; 
-      background-color: #1a1e24; /* Seamless with body */
+      background-color: black; /* Fondo negro puro */
       z-index: 9999; 
       flex-direction: column; 
-      justify-content: center; 
-      align-items: center;
-      opacity: 1;
-      transition: opacity 1s ease-out; /* For final fade out */
+      justify-content: flex-start; /* Texto arriba */
+      align-items: flex-start; /* Texto a la izquierda */
+      padding: 50px;
+      box-sizing: border-box;
+      
+      /* Fuente monoespaciada tipo código con brillo verde neón */
+      font-family: 'Courier New', Courier, monospace;
+      color: #00ff00; 
+      text-shadow: 0 0 5px #00ff00;
+      font-size: 1.1em;
+      text-align: left;
+      line-height: 1.6;
+      
+      /* Efecto sutil de líneas de escaneo de monitor CRT */
+      background-image: linear-gradient(0deg, rgba(0,0,0,0.1) 50%, rgba(255,255,255,0.02) 50%);
+      background-size: 100% 4px;
     }
     
-    /* Retrato Central Grande del Gólem */
-    #central-golem-portrait {
-      max-width: 300px;
-      border-radius: 50%;
-      border: 4px solid #8ba989;
-      box-shadow: 0 0 20px rgba(139, 169, 137, 0.5);
-      animation: pulseIntro 3s infinite ease-in-out; /* Large pulse for intro */
-      margin-bottom: 30px;
-    }
-    
-    #central-golem-portrait img { width: 100%; height: auto; border-radius: 50%; }
-
-    /* Contenedor del texto de máquina de escribir */
-    #typing-text-container {
-      font-size: 1.2em;
-      color: #e0e0e0;
-      max-width: 70%;
-      text-align: center;
-      line-height: 1.5;
-      animation: fadeIn 0.5s ease-out; /* Subtle fade in for text box */
+    .terminal-line {
+      opacity: 0; /* Empiezan invisibles */
+      margin: 0;
+      animation: fadeInTerminalLine 0.1s forwards; /* Aparecen rápido */
     }
 
     /* --- ESTILOS DEL CHAT (Mantenidos y mejorados) --- */
-    #chat-container { display: none; opacity: 0; transition: opacity 1s ease-in; } /* Start invisible for fade-in */
+    #chat-container { display: none; } 
     
     /* Diseño de dos columnas (Flexbox) */
     #chat-layout { display: flex; max-width: 1000px; margin: 20px auto; gap: 30px; align-items: flex-start; justify-content: center; }
@@ -66,22 +62,34 @@
     
     #messages { height: 500px; overflow-y: auto; background: #1f2328; padding: 20px; border-radius: 5px; border: 1px inset #000; display: flex; flex-direction: column; gap: 15px; }
     
-    .msg { padding: 12px 18px; border-radius: 8px; max-width: 85%; text-align: left; font-size: 17px; line-height: 1.4; animation: fadeIn 0.3s ease-out; }
+    .msg { padding: 12px 18px; border-radius: 8px; max-width: 85%; text-align: left; font-size: 17px; line-height: 1.4; animation: fadeInMsg 0.3s ease-out; }
     .user { background: #2b5b84; align-self: flex-end; color: white; border-bottom-right-radius: 2px; }
     .golem { background: #3d453f; align-self: flex-start; border-left: 4px solid #8ba989; color: #e0e0e0; border-bottom-left-radius: 2px; }
 
     /* Indicador de "escribiendo" del Gólem */
     .typing-indicator { font-style: italic; color: #aaa; margin-left: 10px; display: flex; gap: 5px; }
-    .dot { width: 6px; height: 6px; background-color: #aaa; border-radius: 50%; animation: blink 1.4s infinite; }
+    .dot { width: 6px; height: 6px; background-color: #aaa; border-radius: 50%; animation: blink typingBlink infinite; }
     .dot:nth-child(2) { animation-delay: 0.2s; }
     .dot:nth-child(3) { animation-delay: 0.4s; }
 
     /* --- ANIMACIONES CSS --- */
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes blink { 0% { opacity: 0.2; } 20% { opacity: 1; } 100% { opacity: 0.2; } }
+    @keyframes fadeInMsg { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes typingBlink { 0% { opacity: 0.2; } 20% { opacity: 1; } 100% { opacity: 0.2; } }
     
-    /* Pulse anims with different scales */
-    @keyframes pulseIntro { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+    /* Animación para que aparezcan las líneas de terminal */
+    @keyframes fadeInTerminalLine { to { opacity: 1; } }
+
+    /* Efecto de parpadeo de monitor fallando (Flicker) */
+    @keyframes flickerIntro {
+      0% { opacity: 1; }
+      10% { opacity: 0.1; }
+      15% { opacity: 1; }
+      30% { opacity: 0.5; }
+      40% { opacity: 1; }
+      100% { opacity: 1; }
+    }
+
+    /* Pulse anim for chat portrait */
     @keyframes pulseSmall { 
       0% { transform: scale(1); box-shadow: 0 0 15px rgba(139, 169, 137, 0.4); } 
       50% { transform: scale(1.03); box-shadow: 0 0 25px rgba(139, 169, 137, 0.6); } 
@@ -101,12 +109,7 @@
   </div>
 
   <div id="intro-section">
-    <div id="central-golem-portrait">
-      <img src="golem-icon.png" alt="Retrato Central del Gólem">
     </div>
-    <div id="typing-text-container">
-      </div>
-  </div>
 
   <div id="chat-container">
     <div id="chat-layout">
@@ -127,64 +130,63 @@
 
   <script>
     let chatHistory = [];
-    let firstMessageTyped = false; // Prevents reloading first message on redeploys
     const firstMessageText = 'Soy el Gólem de los Ecos. Para cruzar mis dominios, debes probar tu dominio sobre los números. Dime, joven errante: ¿Cómo se lee el número grabado en mi pecho? Escríbelo con palabras: 4.072.508';
+
+    // Líneas de pseudo-código para la terminal
+    const terminalLines = [
+      '> INICIANDO SECUENCIA DE ACCESO...',
+      '> ESTABLECIENDO CONEXIÓN RÚNICA... [OK]',
+      '> ESCANEANDO SECTOR: VALLE DE LOS NATURALES...',
+      '> DETECTADA ENTIDAD DE CLASE: GÓLEM...',
+      '> ESTADO: DESPIERTO. ADVERTENCIA: SISTEMAS DEFENSIVOS ACTIVOS.',
+      '> ABRIENDO CANAL DE COMUNICACIÓN...'
+    ];
 
     function checkPass() {
       if(document.getElementById('pass').value.toUpperCase() === 'MATEMATICA2026') {
         document.getElementById('login-section').style.display = 'none';
         
-        // --- !!! START RPG INTRO CINEMATIC !!! ---
+        // --- !!! INICIAR SECUENCIA DE TERMINAL MÁGICA !!! ---
         const introSection = document.getElementById('intro-section');
         introSection.style.display = 'flex';
+        introSection.innerHTML = ''; // Limpiar intro
 
-        // Start typewriter animation for the first message in the Intro
-        typeWriter('typing-text-container', firstMessageText, 50, () => {
-          // Callback after typing finishes: seamless transition to chat
-          setTimeout(() => {
-            // Smoothly fade out the intro section
-            introSection.style.opacity = '0';
-            setTimeout(() => {
-              introSection.style.display = 'none';
-            }, 1000); // Wait for fade transition duration
-
-            // Load the first Golem message *only once* into the real chat
-            if (!firstMessageTyped) {
-              addMsg('Gólem', firstMessageText);
-              firstMessageTyped = true;
-            }
-
-            // Simultaneously smoothly fade in the full chat interface
-            const chatContainer = document.getElementById('chat-container');
-            chatContainer.style.display = 'flex';
-            // Trigger reflow to apply opacity change after display is set
-            chatContainer.offsetHeight; 
-            chatContainer.style.opacity = '1';
+        // Función recursiva para mostrar líneas secuencialmente
+        let lineIndex = 0;
+        function showNextLine() {
+          if (lineIndex < terminalLines.length) {
+            const lineP = document.createElement('p');
+            lineP.className = 'terminal-line';
+            lineP.innerText = terminalLines[lineIndex];
+            introSection.appendChild(lineP);
+            lineIndex++;
+            // Retraso aleatorio corto entre líneas para realismo (50-200ms)
+            setTimeout(showNextLine, Math.random() * 150 + 50); 
+          } else {
+            // --- FIN DE LA SECUENCIA DE TERMINAL ---
+            // 1. Aplicar efecto de parpadeo (flicker) final
+            introSection.style.animation = 'flickerIntro 0.5s linear forwards';
             
-          }, 1000); // Short delay after typing finishes
-        });
+            // 2. Transición instantánea al chat después del parpadeo
+            setTimeout(() => {
+              introSection.style.display = 'none'; // Ocultar intro
+              
+              // Cargar chat con primer mensaje y mostrar
+              const chatContainer = document.getElementById('chat-container');
+              if (document.getElementById('messages').innerHTML === '') {
+                addMsg('Gólem', firstMessageText);
+              }
+              chatContainer.style.display = 'flex';
+            }, 500); // Duración exacta de la animación flicker
+          }
+        }
+        
+        // Empezar a mostrar líneas
+        showNextLine();
 
       } else {
         alert('Las runas no brillan. Contraseña incorrecta.');
       }
-    }
-
-    // JS Typewriter Function: types text letter by letter, with a callback
-    function typeWriter(elementId, text, speed, callback) {
-      let i = 0;
-      let targetElement = document.getElementById(elementId);
-      targetElement.innerHTML = ''; // clear initial content
-
-      function type() {
-        if (i < text.length) {
-          targetElement.innerHTML += text.charAt(i);
-          i++;
-          setTimeout(type, speed);
-        } else if (callback) {
-          callback(); // execute callback when typing is complete
-        }
-      }
-      type(); // start the first call
     }
 
     function addMsg(sender, text) {
@@ -195,7 +197,6 @@
       document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
     }
 
-    // Funciones para mostrar/ocultar el indicador de escritura del Gólem (NUEVO)
     function showTyping() {
       const div = document.createElement('div');
       div.id = 'typing-bubbling';
@@ -221,7 +222,6 @@
       input.value = '';
       chatHistory.push({ role: "user", parts: [{ text: text }] });
 
-      // Mostramos que el Gólem está "pensando"
       showTyping();
 
       const response = await fetch('/api/chat', {
@@ -232,7 +232,6 @@
       
       const data = await response.json();
       
-      // Ocultamos el indicador justo antes de mostrar la respuesta real
       hideTyping();
 
       addMsg('Gólem', data.reply);
