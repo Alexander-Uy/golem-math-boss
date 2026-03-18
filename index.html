@@ -5,14 +5,12 @@
   <title>Desafío: El Gólem de los Ecos</title>
   <style>
     body { 
-      /* !!! !!! AHORA SÍ: FONDO DE PAISAJE PROPIO !!! !!! */
-      /* Buscamos la imagen que guardaste en GitHub */
       background-image: url('landscape-bridge.png'); 
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-      background-attachment: fixed; /* El fondo se queda fijo al hacer scroll */
-      background-color: #1a1e24; /* Color de fondo por si la imagen tarda en cargar */
+      background-attachment: fixed; 
+      background-color: #1a1e24; 
       color: #e0e0e0; 
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
       text-align: center; 
@@ -22,17 +20,24 @@
     }
     h1 { color: #8ba989; }
     
-    /* Contenedores con fondo traslúcido (glassmorphism) para ver el paisaje */
     .container { 
       max-width: 800px; 
       margin: 0 auto; 
-      /* Fondo oscuro traslúcido para legibilidad */
       background: rgba(42, 47, 53, 0.85); 
       padding: 20px; 
       border-radius: 10px; 
       border: 2px solid #4a554e; 
       box-shadow: 0 4px 15px rgba(0,0,0,0.6); 
-      backdrop-filter: blur(5px); /* Efecto de desenfoque rúnico */
+      backdrop-filter: blur(5px); 
+    }
+
+    /* !!! NUEVO: Centrado perfecto para la caja de inicio !!! */
+    #login-section {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%; /* Para que respire un poco a los lados en móviles */
     }
     
     input[type="text"] { width: 80%; padding: 12px; margin: 10px 0; border-radius: 5px; border: 1px solid #555; background: #1a1e24; color: white; font-size: 16px; }
@@ -75,7 +80,7 @@
       position: fixed; 
       top: 0; left: 0; 
       width: 100vw; height: 100vh; 
-      background-color: #1a1e24; /* Mantenemos fondo negro para el despertar misterioso */
+      background-color: #1a1e24; 
       z-index: 9999; 
       flex-direction: column; 
       justify-content: center; 
@@ -108,7 +113,6 @@
     
     #chat-layout { display: flex; max-width: 1000px; margin: 20px auto; gap: 30px; align-items: flex-start; justify-content: center; }
 
-    /* Columnas del chat traslúcidas */
     #golem-portrait { 
       flex: 1; 
       max-width: 250px; 
@@ -200,130 +204,4 @@
 
   <script>
     let chatHistory = [];
-    let firstMessageTyped = false; 
-    
-    const introText = 'Soy el Gólem de los Ecos... Has despertado a la piedra antigua de su letargo.';
-    const challengeText = 'Para cruzar mis dominios, debes probar tu dominio sobre los números. Dime, joven errante: ¿Cómo se lee el número grabado en mi pecho? Escríbelo con palabras: 4.072.508';
-
-    function showAlert() {
-      const modal = document.getElementById('custom-alert');
-      modal.style.display = 'flex';
-      setTimeout(() => { modal.style.opacity = '1'; }, 10);
-    }
-
-    function closeAlert() {
-      const modal = document.getElementById('custom-alert');
-      modal.style.opacity = '0';
-      setTimeout(() => { modal.style.display = 'none'; }, 300);
-    }
-
-    function checkPass() {
-      if(document.getElementById('pass').value.toUpperCase() === 'MATEMATICA2026') {
-        document.getElementById('login-section').style.display = 'none';
-        
-        const introSection = document.getElementById('intro-section');
-        introSection.style.display = 'flex';
-
-        typeWriter('typing-text-container', introText, 50, () => {
-          setTimeout(() => {
-            introSection.style.opacity = '0';
-            setTimeout(() => {
-              introSection.style.display = 'none';
-            }, 1000); 
-
-            if (!firstMessageTyped) {
-              addMsg('Gólem', introText);
-              firstMessageTyped = true;
-
-              setTimeout(() => {
-                showTyping(); 
-                
-                setTimeout(() => {
-                  hideTyping(); 
-                  addMsg('Gólem', challengeText); 
-                }, 2000); 
-
-              }, 800); 
-            }
-
-            const chatContainer = document.getElementById('chat-container');
-            chatContainer.style.display = 'flex';
-            chatContainer.offsetHeight; 
-            chatContainer.style.opacity = '1';
-            
-          }, 1500); 
-        });
-
-      } else {
-        showAlert();
-      }
-    }
-
-    function typeWriter(elementId, text, speed, callback) {
-      let i = 0;
-      let targetElement = document.getElementById(elementId);
-      targetElement.innerHTML = ''; 
-
-      function type() {
-        if (i < text.length) {
-          targetElement.innerHTML += text.charAt(i);
-          i++;
-          setTimeout(type, speed);
-        } else if (callback) {
-          callback(); 
-        }
-      }
-      type(); 
-    }
-
-    function addMsg(sender, text) {
-      const div = document.createElement('div');
-      div.className = 'msg ' + (sender === 'Tú' ? 'user' : 'golem');
-      div.innerText = text;
-      document.getElementById('messages').appendChild(div);
-      document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
-    }
-
-    function showTyping() {
-      const div = document.createElement('div');
-      div.id = 'typing-bubbling';
-      div.className = 'msg golem typing-indicator';
-      div.innerHTML = '<span class="dot"></span><span class="dot"></span><span class="dot"></span>';
-      document.getElementById('messages').appendChild(div);
-      document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
-    }
-
-    function hideTyping() {
-      const typingIndicator = document.getElementById('typing-bubbling');
-      if (typingIndicator) {
-        typingIndicator.remove();
-      }
-    }
-
-    async function sendMessage() {
-      const input = document.getElementById('userInput');
-      const text = input.value.trim();
-      if(!text) return;
-      
-      addMsg('Tú', text);
-      input.value = '';
-      chatHistory.push({ role: "user", parts: [{ text: text }] });
-
-      showTyping();
-
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ history: chatHistory })
-      });
-      
-      const data = await response.json();
-      
-      hideTyping();
-
-      addMsg('Gólem', data.reply);
-      chatHistory.push({ role: "model", parts: [{ text: data.reply }] });
-    }
-  </script>
-</body>
-</html>
+    let firstMessageTyped = false;
