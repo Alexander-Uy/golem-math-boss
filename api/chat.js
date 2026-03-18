@@ -12,23 +12,20 @@ export default async function handler(req, res) {
   4. Sumar 1.000 a 4.072.508 (R: 4.073.508).
   5. Cifras: "Trescientos cinco mil doce" (R: 305.012).
   6. Unidades en 1 centena de mil (R: 100.000).
-  7. Componer: 5M, 2CM, 4D (R: 5.200.040).
+  7. Componer: 5 Millones, 2 Centenas de Mil y 4 Decenas (R: 5.200.040).
   8. Anterior a 1M (R: 999.999).
-  Reglas: No des respuestas, da pistas místicas. Si terminan, di la clave: ESCRITURA.`;
+  Reglas: No des respuestas, da pistas místicas. Si terminan los 8, di la clave: ESCRITURA.`;
 
-  // 2. Preparamos el cuerpo del mensaje para la API de Google
+  // 2. Formateamos los mensajes (Eliminamos el historial previo para evitar errores de cuota o formato y enviamos solo el contexto actual)
   const contents = [
-    { role: "user", parts: [{ text: systemPrompt }] },
-    { role: "model", parts: [{ text: "Entendido. El ritual comienza." }] },
-    ...history.map(item => ({
-      role: item.role === 'model' ? 'model' : 'user',
-      parts: [{ text: item.parts[0].text }]
-    }))
+    { role: "user", parts: [{ text: systemPrompt + " El alumno dice: " + history[history.length - 1].parts[0].text }] }
   ];
 
   try {
-    // LLAMADA DIRECTA (Sin librerías que fallen)
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+    // CAMBIO CLAVE: Usamos la versión 'v1' y el modelo 'gemini-pro'
+    const url = `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${apiKey}`;
+
+    const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ contents })
@@ -36,10 +33,12 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
+    // Si hay error en la respuesta de Google
     if (data.error) {
       throw new Error(data.error.message);
     }
 
+    // Extraemos la respuesta
     const reply = data.candidates[0].content.parts[0].text;
     res.status(200).json({ reply });
 
