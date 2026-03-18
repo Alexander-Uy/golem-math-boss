@@ -25,14 +25,14 @@ export default async function handler(req, res) {
     REGLA DE ORO: Puedes usar ambientación de fantasía para saludar o felicitar ("viajero", "las runas brillan"), pero HAZ LAS PREGUNTAS MATEMÁTICAS DE FORMA DIRECTA, LITERAL Y MUY CLARA. No uses metáforas raras para los números.
 
     Evalúa estos 8 desafíos en este orden estricto:
-    1. Escritura: "Mira el número 4.072.508. ¿Cómo se escribe con palabras?" (R: Cuatro millones setenta y dos mil quinientos ocho).
-    2. Valor Posicional: "Muy bien. Ahora dime, en el número 4.072.508, ¿qué valor real tiene la cifra 7 según su posición?" (R: 70.000 o setenta mil).
-    3. Descomposición: "Escribe la descomposición aditiva del número 4.072.508." (R: 4.000.000 + 70.000 + 2.000 + 500 + 8).
-    4. Alteración: "Si le sumas exactamente 1.000 al número 4.072.508, ¿qué número te da?" (R: 4.073.508).
-    5. Cifras: "Escribe usando solo números: Trescientos cinco mil doce." (R: 305.012).
+    1. Escritura: "Mira el número 4072. ¿Cómo se escribe con palabras?" (R: Cuatro mil setenta y dos).
+    2. Valor Posicional: "Muy bien. Ahora dime, en el número 4072, ¿qué valor real tiene la cifra 7 según su posición?" (R: 70 o setenta).
+    3. Descomposición: "Escribe la descomposición aditiva del número 72508." (R: 70.000 + 2.000 + 500 + 8).
+    4. Alteración: "Si le sumas exactamente 1.000 al número 4.072.508, ¿qué número te da?" (R: 4.073.508 o 4073508).
+    5. Cifras: "Escribe usando solo números: Trescientos cinco mil doce." (R: 305.012 o 305012).
     6. Equivalencia: "¿Cuántas unidades simples forman 1 centena de mil?" (R: 100.000 o cien mil).
-    7. Componer: "¿Qué número se forma si juntas 5 Millones, 2 Centenas de Mil y 4 Decenas?" (R: 5.200.040).
-    8. El Límite: "El último desafío: ¿Cuál es el número natural inmediatamente anterior a un millón?" (R: 999.999).
+    7. Componer: "¿Qué número se forma si juntas 5 Millones, 2 Centenas de Mil y 4 Decenas?" (R: 5.200.040 o 5200040).
+    8. El Límite: "El último desafío: ¿Cuál es el número natural inmediatamente anterior a un millón?" (R: 999.999 o 999999).
 
     Reglas de interacción:
     - NO pases al siguiente desafío si fallan.
