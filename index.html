@@ -204,4 +204,130 @@
 
   <script>
     let chatHistory = [];
-    let firstMessageTyped = false;
+    let firstMessageTyped = false; 
+    
+    const introText = 'Soy el Gólem de los Ecos... Has despertado a la piedra antigua de su letargo.';
+    const challengeText = 'Para cruzar mis dominios, debes probar tu dominio sobre los números. Dime, joven errante: ¿Cómo se lee el número grabado en mi pecho? Escríbelo con palabras: 4.072.508';
+
+    function showAlert() {
+      const modal = document.getElementById('custom-alert');
+      modal.style.display = 'flex';
+      setTimeout(() => { modal.style.opacity = '1'; }, 10);
+    }
+
+    function closeAlert() {
+      const modal = document.getElementById('custom-alert');
+      modal.style.opacity = '0';
+      setTimeout(() => { modal.style.display = 'none'; }, 300);
+    }
+
+    function checkPass() {
+      if(document.getElementById('pass').value.toUpperCase() === 'MATEMATICA2026') {
+        document.getElementById('login-section').style.display = 'none';
+        
+        const introSection = document.getElementById('intro-section');
+        introSection.style.display = 'flex';
+
+        typeWriter('typing-text-container', introText, 50, () => {
+          setTimeout(() => {
+            introSection.style.opacity = '0';
+            setTimeout(() => {
+              introSection.style.display = 'none';
+            }, 1000); 
+
+            if (!firstMessageTyped) {
+              addMsg('Gólem', introText);
+              firstMessageTyped = true;
+
+              setTimeout(() => {
+                showTyping(); 
+                
+                setTimeout(() => {
+                  hideTyping(); 
+                  addMsg('Gólem', challengeText); 
+                }, 2000); 
+
+              }, 800); 
+            }
+
+            const chatContainer = document.getElementById('chat-container');
+            chatContainer.style.display = 'flex';
+            chatContainer.offsetHeight; 
+            chatContainer.style.opacity = '1';
+            
+          }, 1500); 
+        });
+
+      } else {
+        showAlert();
+      }
+    }
+
+    function typeWriter(elementId, text, speed, callback) {
+      let i = 0;
+      let targetElement = document.getElementById(elementId);
+      targetElement.innerHTML = ''; 
+
+      function type() {
+        if (i < text.length) {
+          targetElement.innerHTML += text.charAt(i);
+          i++;
+          setTimeout(type, speed);
+        } else if (callback) {
+          callback(); 
+        }
+      }
+      type(); 
+    }
+
+    function addMsg(sender, text) {
+      const div = document.createElement('div');
+      div.className = 'msg ' + (sender === 'Tú' ? 'user' : 'golem');
+      div.innerText = text;
+      document.getElementById('messages').appendChild(div);
+      document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+    }
+
+    function showTyping() {
+      const div = document.createElement('div');
+      div.id = 'typing-bubbling';
+      div.className = 'msg golem typing-indicator';
+      div.innerHTML = '<span class="dot"></span><span class="dot"></span><span class="dot"></span>';
+      document.getElementById('messages').appendChild(div);
+      document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+    }
+
+    function hideTyping() {
+      const typingIndicator = document.getElementById('typing-bubbling');
+      if (typingIndicator) {
+        typingIndicator.remove();
+      }
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById('userInput');
+      const text = input.value.trim();
+      if(!text) return;
+      
+      addMsg('Tú', text);
+      input.value = '';
+      chatHistory.push({ role: "user", parts: [{ text: text }] });
+
+      showTyping();
+
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ history: chatHistory })
+      });
+      
+      const data = await response.json();
+      
+      hideTyping();
+
+      addMsg('Gólem', data.reply);
+      chatHistory.push({ role: "model", parts: [{ text: data.reply }] });
+    }
+  </script>
+</body>
+</html>
