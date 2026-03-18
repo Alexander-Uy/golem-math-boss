@@ -4,10 +4,36 @@
   <meta charset="UTF-8">
   <title>Desafío: El Gólem de los Ecos</title>
   <style>
-    body { background-color: #1a1e24; color: #e0e0e0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; margin: 0; padding: 20px; overflow-x: hidden; }
+    body { 
+      /* !!! !!! AHORA SÍ: FONDO DE PAISAJE PROPIO !!! !!! */
+      /* Buscamos la imagen que guardaste en GitHub */
+      background-image: url('landscape-bridge.png'); 
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed; /* El fondo se queda fijo al hacer scroll */
+      background-color: #1a1e24; /* Color de fondo por si la imagen tarda en cargar */
+      color: #e0e0e0; 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      text-align: center; 
+      margin: 0; 
+      padding: 20px; 
+      overflow-x: hidden; 
+    }
     h1 { color: #8ba989; }
     
-    .container { max-width: 800px; margin: 0 auto; background: #2a2f35; padding: 20px; border-radius: 10px; border: 2px solid #4a554e; box-shadow: 0 4px 8px rgba(0,0,0,0.5); }
+    /* Contenedores con fondo traslúcido (glassmorphism) para ver el paisaje */
+    .container { 
+      max-width: 800px; 
+      margin: 0 auto; 
+      /* Fondo oscuro traslúcido para legibilidad */
+      background: rgba(42, 47, 53, 0.85); 
+      padding: 20px; 
+      border-radius: 10px; 
+      border: 2px solid #4a554e; 
+      box-shadow: 0 4px 15px rgba(0,0,0,0.6); 
+      backdrop-filter: blur(5px); /* Efecto de desenfoque rúnico */
+    }
     
     input[type="text"] { width: 80%; padding: 12px; margin: 10px 0; border-radius: 5px; border: 1px solid #555; background: #1a1e24; color: white; font-size: 16px; }
     button { background-color: #557a55; color: white; border: none; padding: 12px 24px; font-size: 16px; border-radius: 5px; cursor: pointer; transition: 0.3s; }
@@ -22,7 +48,7 @@
       top: 0; 
       width: 100vw; 
       height: 100vh; 
-      background-color: rgba(0,0,0,0.8); 
+      background-color: rgba(0,0,0,0.85); 
       justify-content: center; 
       align-items: center;
       opacity: 0;
@@ -30,7 +56,7 @@
     }
 
     .modal-content {
-      background-color: #1f2328;
+      background-color: rgba(31, 35, 40, 0.95); 
       padding: 30px;
       border: 2px solid #8ba989;
       border-radius: 10px;
@@ -38,6 +64,7 @@
       max-width: 400px;
       text-align: center;
       animation: popIn 0.3s ease-out;
+      backdrop-filter: blur(5px);
     }
 
     .modal-content h3 { margin-top: 0; color: #8ba989; font-size: 1.4em; border-bottom: 1px solid #4a554e; padding-bottom: 10px; }
@@ -48,7 +75,7 @@
       position: fixed; 
       top: 0; left: 0; 
       width: 100vw; height: 100vh; 
-      background-color: #1a1e24; 
+      background-color: #1a1e24; /* Mantenemos fondo negro para el despertar misterioso */
       z-index: 9999; 
       flex-direction: column; 
       justify-content: center; 
@@ -81,10 +108,31 @@
     
     #chat-layout { display: flex; max-width: 1000px; margin: 20px auto; gap: 30px; align-items: flex-start; justify-content: center; }
 
-    #golem-portrait { flex: 1; max-width: 250px; background: #2a2f35; padding: 15px; border-radius: 50%; border: 3px solid #8ba989; box-shadow: 0 0 15px rgba(139, 169, 137, 0.4); animation: pulseSmall 4s infinite ease-in-out; }
+    /* Columnas del chat traslúcidas */
+    #golem-portrait { 
+      flex: 1; 
+      max-width: 250px; 
+      background: rgba(42, 47, 53, 0.85); 
+      padding: 15px; 
+      border-radius: 50%; 
+      border: 3px solid #8ba989; 
+      box-shadow: 0 0 15px rgba(139, 169, 137, 0.4); 
+      animation: pulseSmall 4s infinite ease-in-out; 
+      backdrop-filter: blur(5px);
+    }
     #golem-portrait img { width: 100%; height: auto; border-radius: 50%; }
 
-    #chat-window { flex: 2; background: #2a2f35; padding: 20px; border-radius: 10px; border: 2px solid #4a554e; display: flex; flex-direction: column; gap: 15px; }
+    #chat-window { 
+      flex: 2; 
+      background: rgba(42, 47, 53, 0.85); 
+      padding: 20px; 
+      border-radius: 10px; 
+      border: 2px solid #4a554e; 
+      display: flex; 
+      flex-direction: column; 
+      gap: 15px; 
+      backdrop-filter: blur(5px);
+    }
     
     #messages { height: 500px; overflow-y: auto; background: #1f2328; padding: 20px; border-radius: 5px; border: 1px inset #000; display: flex; flex-direction: column; gap: 15px; }
     
@@ -157,7 +205,6 @@
     const introText = 'Soy el Gólem de los Ecos... Has despertado a la piedra antigua de su letargo.';
     const challengeText = 'Para cruzar mis dominios, debes probar tu dominio sobre los números. Dime, joven errante: ¿Cómo se lee el número grabado en mi pecho? Escríbelo con palabras: 4.072.508';
 
-    // NUEVAS FUNCIONES PARA LA VENTANA EMERGENTE
     function showAlert() {
       const modal = document.getElementById('custom-alert');
       modal.style.display = 'flex';
@@ -208,7 +255,6 @@
         });
 
       } else {
-        // AQUÍ LLAMAMOS A NUESTRA NUEVA VENTANA EN LUGAR DEL ALERT POR DEFECTO
         showAlert();
       }
     }
