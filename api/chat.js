@@ -5,42 +5,45 @@ export default async function handler(req, res) {
   const apiKey = process.env.GEMINI_API_KEY;
 
   try {
-    // 🔍 PASO 1: El código le pregunta a Google qué modelos están vivos hoy
     const listResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
     const listData = await listResponse.json();
 
     if (listData.error) throw new Error("Error al listar modelos: " + listData.error.message);
 
-    // Filtramos para encontrar uno que sirva para generar texto (chat)
     const availableModels = listData.models.filter(m => 
       m.supportedGenerationMethods && m.supportedGenerationMethods.includes("generateContent")
     );
 
     if (availableModels.length === 0) throw new Error("Tu API Key no tiene modelos de texto activos.");
 
-    // Elegimos preferentemente uno rápido ("flash") o el primero que funcione
     let chosenModel = availableModels.find(m => m.name.includes("flash"));
     if (!chosenModel) chosenModel = availableModels[0];
 
-    // 📜 PASO 2: Las instrucciones de nuestro Gólem
-    const systemPrompt = `Eres el Gólem de los Ecos. Evalúa 8 desafíos de naturales en orden:
-    1. Escritura de 4.072.508 (R: Cuatro millones setenta y dos mil quinientos ocho).
-    2. Valor del 7 en ese número (R: 70.000).
-    3. Descomposición aditiva (R: 4.000.000 + 70.000 + 2.000 + 500 + 8).
-    4. Sumar 1.000 a 4.072.508 (R: 4.073.508).
-    5. Cifras: "Trescientos cinco mil doce" (R: 305.012).
-    6. Unidades en 1 centena de mil (R: 100.000).
-    7. Componer: 5M, 2CM, 4D (R: 5.200.040).
-    8. Anterior a 1M (R: 999.999).
-    Reglas: No des respuestas, da pistas místicas. Si completan el 8, di la clave: ESCRITURA.`;
+    // !!! AHORA EL GÓLEM ES CLARO Y DIRECTO !!!
+    const systemPrompt = `Eres el Gólem de los Ecos, un guardián de piedra en un juego de rol educativo. 
+    Tu público son estudiantes de 12 años (1° de ESO / 7° año). 
+    REGLA DE ORO: Puedes usar ambientación de fantasía para saludar o felicitar ("viajero", "las runas brillan"), pero HAZ LAS PREGUNTAS MATEMÁTICAS DE FORMA DIRECTA, LITERAL Y MUY CLARA. No uses metáforas raras para los números.
 
-    // Tomamos lo que acaba de escribir el alumno
+    Evalúa estos 8 desafíos en este orden estricto:
+    1. Escritura: "Mira el número 4.072.508. ¿Cómo se escribe con palabras?" (R: Cuatro millones setenta y dos mil quinientos ocho).
+    2. Valor Posicional: "Muy bien. Ahora dime, en el número 4.072.508, ¿qué valor real tiene la cifra 7 según su posición?" (R: 70.000 o setenta mil).
+    3. Descomposición: "Escribe la descomposición aditiva del número 4.072.508." (R: 4.000.000 + 70.000 + 2.000 + 500 + 8).
+    4. Alteración: "Si le sumas exactamente 1.000 al número 4.072.508, ¿qué número te da?" (R: 4.073.508).
+    5. Cifras: "Escribe usando solo números: Trescientos cinco mil doce." (R: 305.012).
+    6. Equivalencia: "¿Cuántas unidades simples forman 1 centena de mil?" (R: 100.000 o cien mil).
+    7. Componer: "¿Qué número se forma si juntas 5 Millones, 2 Centenas de Mil y 4 Decenas?" (R: 5.200.040).
+    8. El Límite: "El último desafío: ¿Cuál es el número natural inmediatamente anterior a un millón?" (R: 999.999).
+
+    Reglas de interacción:
+    - NO pases al siguiente desafío si fallan.
+    - NO des la respuesta correcta si se equivocan, solo dales una pista sencilla.
+    - Cuando completen el desafío 8, felicítalos y diles: "Has superado la prueba. La palabra sagrada es: ESCRITURA".`;
+
     const lastUserMessage = history[history.length - 1].parts[0].text;
     const contents = [
       { role: "user", parts: [{ text: systemPrompt + "\n\nEl alumno dice: " + lastUserMessage }] }
     ];
 
-    // ⚡ PASO 3: Le mandamos el mensaje al modelo que encontramos en el Paso 1
     const url = `https://generativelanguage.googleapis.com/v1beta/${chosenModel.name}:generateContent?key=${apiKey}`;
     
     const chatResponse = await fetch(url, {
@@ -53,7 +56,6 @@ export default async function handler(req, res) {
 
     if (chatData.error) throw new Error(chatData.error.message);
 
-    // Extraemos la respuesta mágica
     const reply = chatData.candidates[0].content.parts[0].text;
     res.status(200).json({ reply });
 
