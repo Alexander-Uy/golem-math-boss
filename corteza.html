@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Desafío: Corteza el Sabio</title>
+  <style>
+    body { 
+      /* !!! NUEVO FONDO: El Árbol Guardián !!! */
+      background-image: url('corteza-guardian.png'); 
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed; 
+      background-color: #1a1e24; 
+      color: #e0e0e0; 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      text-align: center; 
+      margin: 0; 
+      padding: 20px; 
+      overflow-x: hidden; 
+    }
+    h1 { color: #8ba989; }
+    
+    .container { 
+      max-width: 800px; 
+      margin: 0 auto; 
+      background: rgba(42, 47, 53, 0.85); 
+      padding: 20px; 
+      border-radius: 10px; 
+      border: 2px solid #4a554e; 
+      box-shadow: 0 4px 15px rgba(0,0,0,0.6); 
+      backdrop-filter: blur(5px); 
+    }
+
+    #login-section {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%; 
+    }
+    
+    input[type="text"] { width: 80%; padding: 12px; margin: 10px 0; border-radius: 5px; border: 1px solid #555; background: #1a1e24; color: white; font-size: 16px; }
+    button { background-color: #557a55; color: white; border: none; padding: 12px 24px; font-size: 16px; border-radius: 5px; cursor: pointer; transition: 0.3s; }
+    button:hover { background-color: #6a966a; }
+    
+    #custom-alert {
+      display: none; 
+      position: fixed; 
+      z-index: 10000; 
+      left: 0; 
+      top: 0; 
+      width: 100vw; 
+      height: 100vh; 
+      background-color: rgba(0,0,0,0.85); 
+      justify-content: center; 
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-content {
+      background-color: rgba(31, 35, 40, 0.95); 
+      padding: 30px;
+      border: 2px solid #8ba989;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(139, 169, 137, 0.4);
+      max-width: 400px;
+      text-align: center;
+      animation: popIn 0.3s ease-out;
+      backdrop-filter: blur(5px);
+    }
+
+    .modal-content h3 { margin-top: 0; color: #8ba989; font-size: 1.4em; border-bottom: 1px solid #4a554e; padding-bottom: 10px; }
+    .modal-content p { font-size: 1.1em; margin-bottom: 25px; }
+
+    #intro-section {
+      display: none; 
+      position: fixed; 
+      top: 0; left: 0; 
+      width: 100vw; height: 100vh; 
+      background-color: #1a1e24; 
+      z-index: 9999; 
+      flex-direction: column; 
+      justify-content: center; 
+      align-items: center;
+      opacity: 1;
+      transition: opacity 1s ease-out; 
+    }
+    
+    #central-portrait {
+      max-width: 300px;
+      border-radius: 50%;
+      border: 4px solid #8ba989;
+      box-shadow: 0 0 20px rgba(139, 169, 137, 0.5);
+      animation: pulseIntro 3s infinite ease-in-out; 
+      margin-bottom: 30px;
+    }
+    
+    #central-portrait img { width: 100%; height: auto; border-radius: 50%; }
+
+    #typing-text-container {
+      font-size: 1.2em;
+      color: #e0e0e0;
+      max-width: 70%;
+      text-align: center;
+      line-height: 1.5;
+      animation: fadeIn 0.5s ease-out; 
+    }
+
+    #chat-container { display: none; opacity: 0; transition: opacity 1s ease-in; } 
+    
+    #chat-layout { display: flex; max-width: 1000px; margin: 20px auto; gap: 30px; align-items: flex-start; justify-content: center; }
+
+    #golem-portrait { 
+      flex: 1; 
+      max-width: 250px; 
+      background: rgba(42, 47, 53, 0.85); 
+      padding: 15px; 
+      border-radius: 50%; 
+      border: 3px solid #8ba989; 
+      box-shadow: 0 0 15px rgba(139, 169, 137, 0.4); 
+      animation: pulseSmall 4s infinite ease-in-out; 
+      backdrop-filter: blur(5px);
+    }
+    /* Usamos el nuevo icono del Sabio aquí */
+    #golem-portrait img { width: 100%; height: auto; border-radius: 50%; }
+
+    #chat-window { 
+      flex: 2; 
+      background: rgba(42, 47, 53, 0.85); 
+      padding: 20px; 
+      border-radius: 10px; 
+      border: 2px solid #4a554e; 
+      display: flex; 
+      flex-direction: column; 
+      gap: 15px; 
+      backdrop-filter: blur(5px);
+    }
+    
+    #messages { height: 500px; overflow-y: auto; background: #1f2328; padding: 20px; border-radius: 5px; border: 1px inset #000; display: flex; flex-direction: column; gap: 15px; }
+    
+    .msg { padding: 12px 18px; border-radius: 8px; max-width: 85%; text-align: left; font-size: 17px; line-height: 1.4; animation: fadeIn 0.3s ease-out; }
+    .user { background: #2b5b84; align-self: flex-end; color: white; border-bottom-right-radius: 2px; }
+    .golem { background: #3d453f; align-self: flex-start; border-left: 4px solid #8ba989; color: #e0e0e0; border-bottom-left-radius: 2px; }
+
+    .typing-indicator { font-style: italic; color: #aaa; margin-left: 10px; display: flex; gap: 5px; }
+    .dot { width: 6px; height: 6px; background-color: #aaa; border-radius: 50%; animation: blink 1.4s infinite; }
+    .dot:nth-child(2) { animation-delay: 0.2s; }
+    .dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes blink { 0% { opacity: 0.2; } 20% { opacity: 1; } 100% { opacity: 0.2; } }
+    
+    @keyframes pulseIntro { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+    @keyframes pulseSmall { 
+      0% { transform: scale(1); box-shadow: 0 0 15px rgba(139, 169, 137, 0.4); } 
+      50% { transform: scale(1.03); box-shadow: 0 0 25px rgba(139, 169, 137, 0.6); } 
+      100% { transform: scale(1); box-shadow: 0 0 15px rgba(139, 169, 137, 0.4); } 
+    }
+  </style>
+</head>
+<body>
+
+  <audio id="bg-music" loop>
+    <source src="sabio-musica.mp3" type="audio/mpeg">
+  </audio>
+
+  <div id="custom-alert">
+    <div class="modal-content">
+      <h3>El bosque susurra...</h3>
+      <p>La clave no resuena con la verdad. Inténtalo de nuevo.</p>
+      <button onclick="closeAlert()">Intentar de nuevo</button>
+    </div>
+  </div>
+
+  <div class="container" id="login-section">
+    <h1>El Árbol de la Sabiduría</h1>
+    <p>Ingresa la palabra mágica que el Gólem te susurró:</p>
+    <input type="text" id="pass" placeholder="Clave del bosque">
+    <br>
+    <button onclick="checkPass()">Invocar</button>
+  </div>
+
+  <div id="intro-section">
+    <div id="central-portrait">
+      <img src="golem-icon.png" alt="Rostro del Sabio">
+    </div>
+    <div id="typing-text-container"></div>
+  </div>
+
+  <div id="chat-container">
+    <div id="chat-layout">
+      <div id="golem-portrait">
+        <img src="golem-icon.png" alt="Rostro del Sabio">
+      </div>
+      
+      <div id="chat-window">
+        <div id="messages"></div>
+        <div style="display: flex; gap: 10px;">
+          <input type="text" id="userInput" placeholder="Escribe tu respuesta a Corteza el Sabio...">
+          <button onclick="sendMessage()">Enviar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let chatHistory = [];
+    let firstMessageTyped = false; 
+    
+    // !!! NUEVA INTRO Y ACERTIJO DE CORTEZA EL SABIO !!!
+    const introText = 'Has cruzado el puente de piedra y entrado en el Bosque de los Ecos. Soy Corteza el Sabio, guardián de la memoria de los árboles.';
+    const challengeText = 'El Gólem te evaluó la lectura... pero aquí evaluamos el poder de la abreviación. Dime, joven viajero: Si tenemos la descomposición $1 \cdot 10^6 + 0 \cdot 10^5 + 7 \cdot 10^4 + 2 \cdot 10^3 + 5 \cdot 10^2 + 0 \cdot 10^1 + 8 \cdot 10^0$, ¿qué número se forma?';
+
+    function showAlert() {
+      const modal = document.getElementById('custom-alert');
+      modal.style.display = 'flex';
+      setTimeout(() => { modal.style.opacity = '1'; }, 10);
+    }
+
+    function closeAlert() {
+      const modal = document.getElementById('custom-alert');
+      modal.style.opacity = '0';
+      setTimeout(() => { modal.style.display = 'none'; }, 300);
+    }
+
+    function checkPass() {
+      // !!! NUEVA CONTRASEÑA: ESCRITURA !!!
+      if(document.getElementById('pass').value.toUpperCase() === 'ESCRITURA') {
+        
+        const backgroundMusic = document.getElementById('bg-music');
+        backgroundMusic.volume = 0.25; 
+        backgroundMusic.play().catch(error => console.log("Audio bloqueado", error));
+
+        document.getElementById('login-section').style.display = 'none';
+        
+        const introSection = document.getElementById('intro-section');
+        introSection.style.display = 'flex';
+
+        typeWriter('typing-text-container', introText, 50, () => {
+          setTimeout(() => {
+            introSection.style.opacity = '0';
+            setTimeout(() => {
+              introSection.style.display = 'none';
+            }, 1000); 
+
+            if (!firstMessageTyped) {
+              addMsg('Guardián', introText);
+              firstMessageTyped = true;
+
+              setTimeout(() => {
+                showTyping(); 
+                
+                setTimeout(() => {
+                  hideTyping(); 
+                  addMsg('Guardián', challengeText); 
+                }, 2000); 
+
+              }, 800); 
+            }
+
+            const chatContainer = document.getElementById('chat-container');
+            chatContainer.style.display = 'flex';
+            chatContainer.offsetHeight; 
+            chatContainer.style.opacity = '1';
+            
+          }, 1500); 
+        });
+
+      } else {
+        showAlert();
+      }
+    }
+
+    function typeWriter(elementId, text, speed, callback) {
+      let i = 0;
+      let targetElement = document.getElementById(elementId);
+      targetElement.innerHTML = ''; 
+
+      function type() {
+        if (i < text.length) {
+          targetElement.innerHTML += text.charAt(i);
+          i++;
+          setTimeout(type, speed);
+        } else if (callback) {
+          callback(); 
+        }
+      }
+      type(); 
+    }
+
+    function addMsg(sender, text) {
+      const div = document.createElement('div');
+      div.className = 'msg ' + (sender === 'Tú' ? 'user' : 'golem');
+      div.innerText = text;
+      document.getElementById('messages').appendChild(div);
+      document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+    }
+
+    function showTyping() {
+      const div = document.createElement('div');
+      div.id = 'typing-bubbling';
+      div.className = 'msg golem typing-indicator';
+      div.innerHTML = '<span class="dot"></span><span class="dot"></span><span class="dot"></span>';
+      document.getElementById('messages').appendChild(div);
+      document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+    }
+
+    function hideTyping() {
+      const typingIndicator = document.getElementById('typing-bubbling');
+      if (typingIndicator) {
+        typingIndicator.remove();
+      }
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById('userInput');
+      const text = input.value.trim();
+      if(!text) return;
+      
+      addMsg('Tú', text);
+      input.value = '';
+      chatHistory.push({ role: "user", parts: [{ text: text }] });
+
+      showTyping();
+
+      // !!! !!! PUNTO DE CAMBIO: Llamamos a una nueva API !!! !!!
+      const response = await fetch('/api/chat-corteza', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ history: chatHistory })
+      });
+      
+      const data = await response.json();
+      
+      hideTyping();
+
+      addMsg('Guardián', data.reply);
+      chatHistory.push({ role: "model", parts: [{ text: data.reply }] });
+    }
+  </script>
+</body>
+</html>
