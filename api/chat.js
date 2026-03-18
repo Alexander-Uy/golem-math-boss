@@ -8,54 +8,41 @@ export default async function handler(req, res) {
   try {
     const { history } = req.body;
     
-    // Validamos que el historial no esté vacío
-    if (!history || history.length === 0) {
-      return res.status(400).json({ error: "El historial rúnico está vacío." });
-    }
-
-    const systemInstruction = `
-      Eres el "Gólem de los Ecos", guardián del Valle de los Naturales. 
-      Tu lenguaje es místico y solemne.
-      OBJETIVO: Evaluar 8 desafíos de números naturales en orden.
-      
-      REGLAS:
-      1. NO pases al siguiente desafío si el alumno falla.
-      2. NO des la respuesta correcta. Da pistas místicas.
-      3. Sé estricto con la ortografía (ej: "setecientos" con C).
-      4. Al final del reto 8 entrega la palabra clave: ESCRITURA.
-
-      ORDEN DE DESAFÍOS:
-      1. Escritura: ¿Cómo se lee 4.072.508? (R: Cuatro millones setenta y dos mil quinientos ocho).
-      2. Valor Posicional: ¿Qué valor representa el 7 en 4.072.508? (R: 70.000).
-      3. Descomposición: Aditiva de 4.072.508 (R: 4.000.000 + 70.000 + 2.000 + 500 + 8).
-      4. Sumar 1 unidad de mil a 4.072.508 (R: 4.073.508).
-      5. Cifras: "Trescientos cinco mil doce" (R: 305.012).
-      6. ¿Cuántas unidades son 1 centena de mil? (R: 100.000).
-      7. Componer: 5 Millones, 2 Centenas de Mil y 4 Decenas (R: 5.200.040).
-      8. Anterior a un millón (R: 999.999).
-    `;
+    const systemInstruction = `Eres el Gólem de los Ecos. Evalúa 8 desafíos de naturales. 
+    1. Escritura de 4.072.508. 
+    2. Valor del 7 (70.000). 
+    3. Descomposición aditiva. 
+    4. Sumar 1000. 
+    5. Cifras: 305.012. 
+    6. Centena de mil (100.000). 
+    7. Componer: 5M, 2CM, 4D (5.200.040). 
+    8. Anterior a 1M (999.999).
+    No des respuestas, da pistas místicas. Si completan todo, di la clave: ESCRITURA.`;
 
     const model = genAI.getGenerativeModel({ 
       model: "gemini-1.5-flash",
       systemInstruction: systemInstruction 
     });
 
-    // Extraemos el último mensaje para enviarlo por separado si es necesario
-    const lastUserMsg = history[history.length - 1].parts[0].text;
-    
-    // Limpiamos el historial para que Gemini no se confunda con formatos viejos
+    // Filtramos el historial para asegurar el formato correcto que pide Google
+    const formattedHistory = history.map(item => ({
+      role: item.role === 'model' ? 'model' : 'user',
+      parts: [{ text: item.parts[0].text }]
+    }));
+
     const chat = model.startChat({
-      history: history.slice(0, -1), // Todo menos el último mensaje
+      history: formattedHistory.slice(0, -1),
     });
 
-    const result = await chat.sendMessage(lastUserMsg);
+    const lastMessage = formattedHistory[formattedHistory.length - 1].parts[0].text;
+    const result = await chat.sendMessage(lastMessage);
     const response = await result.response;
-    const text = response.text();
-
-    res.status(200).json({ reply: text });
+    
+    res.status(200).json({ reply: response.text() });
 
   } catch (error) {
-    console.error("ERROR RÚNICO:", error);
-    res.status(500).json({ reply: "Las runas están borrosas... (Error de conexión con la IA. Revisa tu API Key en Vercel)." });
+    // Esto nos ayudará a ver el error real en los logs de Vercel
+    console.error("DETALLE DEL ERROR:", error.message);
+    res.status(500).json({ reply: "Las runas están borrosas... Error: " + error.message });
   }
 }
