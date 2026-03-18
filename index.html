@@ -14,87 +14,71 @@
     button { background-color: #557a55; color: white; border: none; padding: 12px 24px; font-size: 16px; border-radius: 5px; cursor: pointer; transition: 0.3s; }
     button:hover { background-color: #6a966a; }
     
-    /* --- !!! NUEVA SECCIÓN DE INTRO: TERMINAL MÁGICA !!! --- */
+    /* --- !!! NUEVA SECCIÓN DE INTRO: ZOOM INMERSIVO (KEN BURNS) !!! --- */
     #intro-section {
-      display: none; /* Oculto por defecto */
+      display: none; 
       position: fixed; 
       top: 0; left: 0; 
       width: 100vw; height: 100vh; 
-      background-color: black; /* Fondo negro puro */
+      background-color: black; 
       z-index: 9999; 
-      flex-direction: column; 
-      justify-content: flex-start; /* Texto arriba */
-      align-items: flex-start; /* Texto a la izquierda */
-      padding: 50px;
-      box-sizing: border-box;
-      
-      /* Fuente monoespaciada tipo código con brillo verde neón */
-      font-family: 'Courier New', Courier, monospace;
-      color: #00ff00; 
-      text-shadow: 0 0 5px #00ff00;
-      font-size: 1.1em;
-      text-align: left;
-      line-height: 1.6;
-      
-      /* Efecto sutil de líneas de escaneo de monitor CRT */
-      background-image: linear-gradient(0deg, rgba(0,0,0,0.1) 50%, rgba(255,255,255,0.02) 50%);
-      background-size: 100% 4px;
+      overflow: hidden; /* Evita que el zoom cree barras de desplazamiento */
+      opacity: 1;
+      transition: opacity 1.5s ease-in-out; /* Transición muy suave de salida */
     }
     
-    .terminal-line {
-      opacity: 0; /* Empiezan invisibles */
-      margin: 0;
-      animation: fadeInTerminalLine 0.1s forwards; /* Aparecen rápido */
+    #ken-burns-image {
+      width: 100%;
+      height: 100%;
+      /* Usamos una imagen temporal de un bosque brumoso */
+      background-image: url('https://images.unsplash.com/photo-1511497584788-876760111969?q=80&w=1080&auto=format&fit=crop'); 
+      background-size: cover;
+      background-position: center;
+      /* La animación dura 6 segundos, escalando lentamente */
+      animation: zoomInSlowly 6s linear forwards; 
     }
 
-    /* --- ESTILOS DEL CHAT (Mantenidos y mejorados) --- */
-    #chat-container { display: none; } 
+    /* Un leve oscurecimiento encima de la imagen para dar misterio */
+    #intro-overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.4);
+      z-index: 10000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      color: #8ba989;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeInText 2s ease-in forwards 1s; /* Aparece al segundo 1 */
+    }
+
+    /* --- ESTILOS DEL CHAT (Mantenidos) --- */
+    #chat-container { display: none; opacity: 0; transition: opacity 1s ease-in; } 
     
-    /* Diseño de dos columnas (Flexbox) */
     #chat-layout { display: flex; max-width: 1000px; margin: 20px auto; gap: 30px; align-items: flex-start; justify-content: center; }
-
-    /* Columna IZQUIERDA: Retrato del Gólem */
     #golem-portrait { flex: 1; max-width: 250px; background: #2a2f35; padding: 15px; border-radius: 50%; border: 3px solid #8ba989; box-shadow: 0 0 15px rgba(139, 169, 137, 0.4); animation: pulseSmall 4s infinite ease-in-out; }
     #golem-portrait img { width: 100%; height: auto; border-radius: 50%; }
-
-    /* Columna DERECHA: Ventana de Chat */
     #chat-window { flex: 2; background: #2a2f35; padding: 20px; border-radius: 10px; border: 2px solid #4a554e; display: flex; flex-direction: column; gap: 15px; }
-    
     #messages { height: 500px; overflow-y: auto; background: #1f2328; padding: 20px; border-radius: 5px; border: 1px inset #000; display: flex; flex-direction: column; gap: 15px; }
-    
     .msg { padding: 12px 18px; border-radius: 8px; max-width: 85%; text-align: left; font-size: 17px; line-height: 1.4; animation: fadeInMsg 0.3s ease-out; }
     .user { background: #2b5b84; align-self: flex-end; color: white; border-bottom-right-radius: 2px; }
     .golem { background: #3d453f; align-self: flex-start; border-left: 4px solid #8ba989; color: #e0e0e0; border-bottom-left-radius: 2px; }
 
-    /* Indicador de "escribiendo" del Gólem */
     .typing-indicator { font-style: italic; color: #aaa; margin-left: 10px; display: flex; gap: 5px; }
     .dot { width: 6px; height: 6px; background-color: #aaa; border-radius: 50%; animation: blink typingBlink infinite; }
     .dot:nth-child(2) { animation-delay: 0.2s; }
     .dot:nth-child(3) { animation-delay: 0.4s; }
 
     /* --- ANIMACIONES CSS --- */
+    @keyframes zoomInSlowly { from { transform: scale(1); } to { transform: scale(1.15); } }
+    @keyframes fadeInText { from { opacity: 0; } to { opacity: 1; } }
     @keyframes fadeInMsg { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes typingBlink { 0% { opacity: 0.2; } 20% { opacity: 1; } 100% { opacity: 0.2; } }
-    
-    /* Animación para que aparezcan las líneas de terminal */
-    @keyframes fadeInTerminalLine { to { opacity: 1; } }
-
-    /* Efecto de parpadeo de monitor fallando (Flicker) */
-    @keyframes flickerIntro {
-      0% { opacity: 1; }
-      10% { opacity: 0.1; }
-      15% { opacity: 1; }
-      30% { opacity: 0.5; }
-      40% { opacity: 1; }
-      100% { opacity: 1; }
-    }
-
-    /* Pulse anim for chat portrait */
-    @keyframes pulseSmall { 
-      0% { transform: scale(1); box-shadow: 0 0 15px rgba(139, 169, 137, 0.4); } 
-      50% { transform: scale(1.03); box-shadow: 0 0 25px rgba(139, 169, 137, 0.6); } 
-      100% { transform: scale(1); box-shadow: 0 0 15px rgba(139, 169, 137, 0.4); } 
-    }
+    @keyframes pulseSmall { 0% { transform: scale(1); box-shadow: 0 0 15px rgba(139, 169, 137, 0.4); } 50% { transform: scale(1.03); box-shadow: 0 0 25px rgba(139, 169, 137, 0.6); } 100% { transform: scale(1); box-shadow: 0 0 15px rgba(139, 169, 137, 0.4); } }
 
   </style>
 </head>
@@ -109,15 +93,15 @@
   </div>
 
   <div id="intro-section">
-    </div>
+    <div id="ken-burns-image"></div>
+    <div id="intro-overlay">Adentrándose en el Valle...</div>
+  </div>
 
   <div id="chat-container">
     <div id="chat-layout">
-      
       <div id="golem-portrait">
         <img src="golem-icon.png" alt="Retrato del Gólem">
       </div>
-      
       <div id="chat-window">
         <div id="messages"></div>
         <div style="display: flex; gap: 10px;">
@@ -132,57 +116,35 @@
     let chatHistory = [];
     const firstMessageText = 'Soy el Gólem de los Ecos. Para cruzar mis dominios, debes probar tu dominio sobre los números. Dime, joven errante: ¿Cómo se lee el número grabado en mi pecho? Escríbelo con palabras: 4.072.508';
 
-    // Líneas de pseudo-código para la terminal
-    const terminalLines = [
-      '> INICIANDO SECUENCIA DE ACCESO...',
-      '> ESTABLECIENDO CONEXIÓN RÚNICA... [OK]',
-      '> ESCANEANDO SECTOR: VALLE DE LOS NATURALES...',
-      '> DETECTADA ENTIDAD DE CLASE: GÓLEM...',
-      '> ESTADO: DESPIERTO. ADVERTENCIA: SISTEMAS DEFENSIVOS ACTIVOS.',
-      '> ABRIENDO CANAL DE COMUNICACIÓN...'
-    ];
-
     function checkPass() {
       if(document.getElementById('pass').value.toUpperCase() === 'MATEMATICA2026') {
         document.getElementById('login-section').style.display = 'none';
         
-        // --- !!! INICIAR SECUENCIA DE TERMINAL MÁGICA !!! ---
+        // Mostrar la intro cinematográfica
         const introSection = document.getElementById('intro-section');
-        introSection.style.display = 'flex';
-        introSection.innerHTML = ''; // Limpiar intro
+        introSection.style.display = 'block';
 
-        // Función recursiva para mostrar líneas secuencialmente
-        let lineIndex = 0;
-        function showNextLine() {
-          if (lineIndex < terminalLines.length) {
-            const lineP = document.createElement('p');
-            lineP.className = 'terminal-line';
-            lineP.innerText = terminalLines[lineIndex];
-            introSection.appendChild(lineP);
-            lineIndex++;
-            // Retraso aleatorio corto entre líneas para realismo (50-200ms)
-            setTimeout(showNextLine, Math.random() * 150 + 50); 
-          } else {
-            // --- FIN DE LA SECUENCIA DE TERMINAL ---
-            // 1. Aplicar efecto de parpadeo (flicker) final
-            introSection.style.animation = 'flickerIntro 0.5s linear forwards';
+        // Temporizador: La animación de zoom dura 6s. Al segundo 4.5 empezamos a desvanecer.
+        setTimeout(() => {
+          introSection.style.opacity = '0'; // Comienza el desvanecimiento suave (fade out)
+          
+          // Esperamos 1.5s a que termine de desvanecerse para ocultarla y mostrar el chat
+          setTimeout(() => {
+            introSection.style.display = 'none';
             
-            // 2. Transición instantánea al chat después del parpadeo
-            setTimeout(() => {
-              introSection.style.display = 'none'; // Ocultar intro
-              
-              // Cargar chat con primer mensaje y mostrar
-              const chatContainer = document.getElementById('chat-container');
-              if (document.getElementById('messages').innerHTML === '') {
-                addMsg('Gólem', firstMessageText);
-              }
-              chatContainer.style.display = 'flex';
-            }, 500); // Duración exacta de la animación flicker
-          }
-        }
-        
-        // Empezar a mostrar líneas
-        showNextLine();
+            const chatContainer = document.getElementById('chat-container');
+            if (document.getElementById('messages').innerHTML === '') {
+              addMsg('Gólem', firstMessageText);
+            }
+            
+            chatContainer.style.display = 'flex';
+            // Forzar reflow para que la opacidad anime correctamente
+            chatContainer.offsetHeight; 
+            chatContainer.style.opacity = '1'; // Fade in del chat
+
+          }, 1500); // Tiempo que tarda la opacidad en llegar a 0
+          
+        }, 4500); // Tiempo que el usuario ve el zoom antes de empezar a desaparecer
 
       } else {
         alert('Las runas no brillan. Contraseña incorrecta.');
