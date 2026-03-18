@@ -13,6 +13,36 @@
     button { background-color: #557a55; color: white; border: none; padding: 12px 24px; font-size: 16px; border-radius: 5px; cursor: pointer; transition: 0.3s; }
     button:hover { background-color: #6a966a; }
     
+    /* --- VENTANA EMERGENTE PERSONALIZADA (MODAL) --- */
+    #custom-alert {
+      display: none; 
+      position: fixed; 
+      z-index: 10000; 
+      left: 0; 
+      top: 0; 
+      width: 100vw; 
+      height: 100vh; 
+      background-color: rgba(0,0,0,0.8); 
+      justify-content: center; 
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-content {
+      background-color: #1f2328;
+      padding: 30px;
+      border: 2px solid #8ba989;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(139, 169, 137, 0.4);
+      max-width: 400px;
+      text-align: center;
+      animation: popIn 0.3s ease-out;
+    }
+
+    .modal-content h3 { margin-top: 0; color: #8ba989; font-size: 1.4em; border-bottom: 1px solid #4a554e; padding-bottom: 10px; }
+    .modal-content p { font-size: 1.1em; margin-bottom: 25px; }
+
     #intro-section {
       display: none; 
       position: fixed; 
@@ -67,6 +97,7 @@
     .dot:nth-child(2) { animation-delay: 0.2s; }
     .dot:nth-child(3) { animation-delay: 0.4s; }
 
+    @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes blink { 0% { opacity: 0.2; } 20% { opacity: 1; } 100% { opacity: 0.2; } }
     
@@ -79,6 +110,14 @@
   </style>
 </head>
 <body>
+
+  <div id="custom-alert">
+    <div class="modal-content">
+      <h3>El Gólem advierte...</h3>
+      <p>Las runas no brillan. Contraseña incorrecta.</p>
+      <button onclick="closeAlert()">Intentar de nuevo</button>
+    </div>
+  </div>
 
   <div class="container" id="login-section">
     <h1>Portal del Valle de los Naturales</h1>
@@ -118,6 +157,19 @@
     const introText = 'Soy el Gólem de los Ecos... Has despertado a la piedra antigua de su letargo.';
     const challengeText = 'Para cruzar mis dominios, debes probar tu dominio sobre los números. Dime, joven errante: ¿Cómo se lee el número grabado en mi pecho? Escríbelo con palabras: 4.072.508';
 
+    // NUEVAS FUNCIONES PARA LA VENTANA EMERGENTE
+    function showAlert() {
+      const modal = document.getElementById('custom-alert');
+      modal.style.display = 'flex';
+      setTimeout(() => { modal.style.opacity = '1'; }, 10);
+    }
+
+    function closeAlert() {
+      const modal = document.getElementById('custom-alert');
+      modal.style.opacity = '0';
+      setTimeout(() => { modal.style.display = 'none'; }, 300);
+    }
+
     function checkPass() {
       if(document.getElementById('pass').value.toUpperCase() === 'MATEMATICA2026') {
         document.getElementById('login-section').style.display = 'none';
@@ -156,7 +208,8 @@
         });
 
       } else {
-        alert('Las runas no brillan. Contraseña incorrecta.');
+        // AQUÍ LLAMAMOS A NUESTRA NUEVA VENTANA EN LUGAR DEL ALERT POR DEFECTO
+        showAlert();
       }
     }
 
