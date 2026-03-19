@@ -331,12 +331,8 @@
       });
       
       const data = await response.json();
-      
       hideTyping();
 
-      addMsg('Gólem', data.reply);
-      chatHistory.push({ role: "model", parts: [{ text: data.reply }] });
-    }
       addMsg('Gólem', data.reply);
       chatHistory.push({ role: "model", parts: [{ text: data.reply }] });
 
