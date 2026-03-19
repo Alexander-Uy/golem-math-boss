@@ -337,6 +337,17 @@
       addMsg('Gólem', data.reply);
       chatHistory.push({ role: "model", parts: [{ text: data.reply }] });
     }
+      addMsg('Gólem', data.reply);
+      chatHistory.push({ role: "model", parts: [{ text: data.reply }] });
+
+      // !!! AVISO PARA VOLVER A FANTASYCLASS !!!
+      if (data.reply.includes("ESCRITURA")) {
+        setTimeout(() => {
+          alert("¡Misión Cumplida! Has obtenido la palabra clave: ESCRITURA.\n\nRegresa a FantasyClass, reclama tus puntos de experiencia y usa esta palabra para abrir el camino hacia el Bosque de los Ecos.");
+          document.getElementById('userInput').disabled = true; // Bloquea el chat
+        }, 1500); // Espera 1.5 segundos para que terminen de leer al Gólem
+      }
+    }
   </script>
 </body>
 </html>
